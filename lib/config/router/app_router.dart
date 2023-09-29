@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 //Nota: utilizar GoRoute nos permite no utilizar configuraciones adicionales
 //si vamos a utilizar nuestro codigo en la web
 
-final appRouter = GoRoute(
-  path: '/',
+final appRouter = GoRouter(
+  initialLocation: '/',
   routes: [
     GoRoute(
         path: '/',
