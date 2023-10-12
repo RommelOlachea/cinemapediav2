@@ -1,3 +1,4 @@
+import 'package:cinemapedia/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -43,20 +44,24 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   @override
   Widget build(BuildContext context) {
     //aqui si utilizamos el watch porque vamos a estar al pendiente
-    //del listado de las peliculas.
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    //del listado de las peliculas, por si hubo algun cambio
+    // final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
 
-    if (nowPlayingMovies.length == 0) return CircularProgressIndicator();
+    final slidesShowMovies = ref.watch(moviesSlideshowProvider);
+
+    if (slidesShowMovies.length == 0) return const CircularProgressIndicator();
 
     return Column(
-        children: [
+      children: [
 
+        const CustomAppbar(),
 
-              CustomAppbar(),
+        MoviesSlideshow(movies: slidesShowMovies),
 
-              MoviesSlideshow(movies: nowPlayingMovies),
-
-        ],
+      ],
     );
   }
 }
+
+
+
