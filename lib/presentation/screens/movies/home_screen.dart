@@ -46,7 +46,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   Widget build(BuildContext context) {
     //aqui si utilizamos el watch porque vamos a estar al pendiente
     //del listado de las peliculas, por si hubo algun cambio
-    // final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
 
     final slidesShowMovies = ref.watch(moviesSlideshowProvider);
 
@@ -58,6 +58,15 @@ class _HomeViewState extends ConsumerState<_HomeView> {
         const CustomAppbar(),
 
         MoviesSlideshow(movies: slidesShowMovies),
+
+        MovieHorizontalListview(
+          movies: nowPlayingMovies,
+          title: 'En cines',
+          subTitle: 'Octubre 17',
+          ),
+        
+
+        
 
       ],
     );
