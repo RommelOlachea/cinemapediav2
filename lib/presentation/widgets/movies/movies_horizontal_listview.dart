@@ -3,13 +3,13 @@ import 'package:cinemapedia/config/helpers/human_format.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MovieHorizontalListview extends StatelessWidget {
+class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subTitle;
-  final VoidCallback? loadNextPage;
+  final VoidCallback? loadNextPage; //esto me permite ejecutar una funcion del padre
 
-  const MovieHorizontalListview(
+  const MovieHorizontalListview(  
       {super.key,
       required this.movies,
       this.title,
@@ -17,25 +17,60 @@ class MovieHorizontalListview extends StatelessWidget {
       this.loadNextPage});
 
   @override
+  State<MovieHorizontalListview> createState() =>
+      _MovieHorizontalListviewState();
+}
+
+class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
+  final scrollController = ScrollController();
+
+  //NOTA: Cada vez que agregamos un listener, debemos agregar el dispose del mismo, en el
+  //dispose
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    scrollController.addListener(() {
+      if (widget.loadNextPage == null) return;
+
+      if (scrollController.position.pixels + 200 >=
+          scrollController.position.maxScrollExtent) {
+        print('Load next movies');
+        widget.loadNextPage!();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 350,
       child: Column(
         children: [
-          if (title != null || subTitle != null)
+          if (widget.title != null || widget.subTitle != null)
             _Title(
-              title: title,
-              subTitle: subTitle,
+              title: widget.title,
+              subTitle: widget.subTitle,
             ),
           Expanded(
               child: ListView.builder(
-            itemCount: movies.length,
+            controller: scrollController,
+            itemCount: widget.movies.length,
             physics:
                 const BouncingScrollPhysics(), //con esto se anima igual tanto en ios como en android
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return _Slide(
-                movie: movies[index],
+                movie: widget.movies[index],
               );
             },
           ))
@@ -115,7 +150,10 @@ class _Slide extends StatelessWidget {
                       ?.copyWith(color: Colors.yellow.shade800),
                 ),
                 const Spacer(),
-                Text(HumanFormats.number(movie.popularity),style: textStyle.bodySmall ,)
+                Text(
+                  HumanFormats.number(movie.popularity),
+                  style: textStyle.bodySmall,
+                )
                 // Text('${movie.popularity}', style: textStyle.bodySmall,)
               ],
             ),
