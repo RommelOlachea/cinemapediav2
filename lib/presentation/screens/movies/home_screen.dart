@@ -51,30 +51,77 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     if (slidesShowMovies.length == 0) return const CircularProgressIndicator();
 
-    return Column(
-      children: [
-        const CustomAppbar(),
-        MoviesSlideshow(movies: slidesShowMovies),
-        MovieHorizontalListview(
-          movies: nowPlayingMovies,
-          title: 'En cines',
-          subTitle: 'Octubre 17',
-          loadNextPage: () {
-            print('Llamado del padre');
+    return CustomScrollView(
+      slivers: [
 
-            ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(); //recordemos que el read se utiliza cuando estamos dentro de funciones.
-          },
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppbar(),
+          ),
         ),
-        MovieHorizontalListview(
-          movies: nowPlayingMovies,
-          title: 'En cines',
-          subTitle: 'Octubre 17',
-          loadNextPage: () {
-            print('Llamado del padre');
+        
+        SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+          return Column(
+            children: [
+              
+              // const CustomAppbar(),
+              
+              MoviesSlideshow(movies: slidesShowMovies),
+              
+              MovieHorizontalListview(
+                movies: nowPlayingMovies,
+                title: 'En cines',
+                subTitle: 'Octubre 17',
+                loadNextPage: () {
+                  //print('Llamado del padre');
+                  ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(); //recordemos que el read se utiliza cuando estamos dentro de funciones.
+                },
+              ),
 
-            ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(); //recordemos que el read se utiliza cuando estamos dentro de funciones.
-          },
-        ),
+
+              MovieHorizontalListview(
+                movies: nowPlayingMovies,
+                title: 'Proximamente',
+                subTitle: 'En este mes',
+                loadNextPage: () {
+                  //print('Llamado del padre');
+                  ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(); //recordemos que el read se utiliza cuando estamos dentro de funciones.
+                },
+              ),
+              MovieHorizontalListview(
+                movies: nowPlayingMovies,
+                title: 'Populares',
+                // subTitle: 'En este mes',
+                loadNextPage: () {
+                  //print('Llamado del padre');
+                  ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(); //recordemos que el read se utiliza cuando estamos dentro de funciones.
+                },
+              ),
+              MovieHorizontalListview(
+                movies: nowPlayingMovies,
+                title: 'Mejor calificadas',
+                subTitle: 'Desde siempre',
+                loadNextPage: () {
+                  //print('Llamado del padre');
+                  ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(); //recordemos que el read se utiliza cuando estamos dentro de funciones.
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
+          );
+        }, childCount: 1)),
       ],
     );
   }
