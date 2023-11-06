@@ -7,10 +7,27 @@ class MoviesRepositoryImpl extends MoviesRepository {
 
   //nota: la implementacion del repository debera recibir una implementacion del la abstraccion del MovieDatasource
   //aunque la propiedad este definida como la abstraccion
-  MoviesRepositoryImpl(this.datasource); 
+  MoviesRepositoryImpl(this.datasource);
 
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) {
-    return datasource.getNowPlaying(page: page);
+    return datasource.getNowPlaying(page: page); //regresamos el listado de peliculas del datasource dado
+  }
+
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) {
+    return datasource.getPopular(page: page); //regresamos el listado de peliculas del datasource dado
+  }
+  
+  @override
+  Future<List<Movie>> getTopRated({int page = 1}) {
+    return datasource.getTopRated(page: page);
+  }
+  
+  @override
+  Future<List<Movie>> getUpcoming({int page = 1}) {
+    return datasource.getUpcoming(page: page);
   }
 }
+
+

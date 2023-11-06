@@ -1,4 +1,4 @@
-//aqui se definiran los nowplaymoviesingproviders, upcomingmoviesprovider, toprelatedmoviesproviders, etc
+//aqui se definiran los nowplaymoviesingproviders, upcomingmoviesprovider, toprelatedmoviesproviders, popularMoviesProvider, etc
 
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
@@ -12,6 +12,33 @@ final nowPlayingMoviesProvider =
   //nota: solo asignamos la referencia a la funcion para que sea invocada directamente
   //de la implementacion del repositorio que esta en el movieRepositoryProvider.
   final fetchMoreMovies = ref.watch(movieRepositoryProvider).getNowPlaying;
+
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
+final nowPopularMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  //nota: solo asignamos la referencia a la funcion para que sea invocada directamente
+  //de la implementacion del repositorio que esta en el movieRepositoryProvider.
+  final fetchMoreMovies = ref.watch(movieRepositoryProvider).getPopular;
+
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
+final topRatedMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  //nota: solo asignamos la referencia a la funcion para que sea invocada directamente
+  //de la implementacion del repositorio que esta en el movieRepositoryProvider.
+  final fetchMoreMovies = ref.watch(movieRepositoryProvider).getTopRated;
+
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
+final upComingMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  //nota: solo asignamos la referencia a la funcion para que sea invocada directamente
+  //de la implementacion del repositorio que esta en el movieRepositoryProvider.
+  final fetchMoreMovies = ref.watch(movieRepositoryProvider).getUpcoming;
 
   return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
 });
