@@ -9,11 +9,10 @@ class MoviesRepositoryImpl extends MoviesRepository {
   //aunque la propiedad este definida como la abstraccion
   MoviesRepositoryImpl(this.datasource);
 
-
-//en los siguientes metodos, aunque sean un Future, no tienen el async, porque el metodo del datasource 
+//en los siguientes metodos, aunque sean un Future, no tienen el async, porque el metodo del datasource
 //que mandan llamar lo tiene, podriamos ponersele tambien en el metodo que llama al datasource y no pasa nada.
   @override
-  Future<List<Movie>> getNowPlaying({int page = 1})  {  
+  Future<List<Movie>> getNowPlaying({int page = 1}) {
     return datasource.getNowPlaying(
         page: page); //regresamos el listado de peliculas del datasource dado
   }
@@ -37,5 +36,10 @@ class MoviesRepositoryImpl extends MoviesRepository {
   @override
   Future<Movie> getMovieById(String id) {
     return datasource.getMovieById(id);
+  }
+
+  @override
+  Future<List<Movie>> searchMovie(String query) {
+    return datasource.searchMovie(query);
   }
 }

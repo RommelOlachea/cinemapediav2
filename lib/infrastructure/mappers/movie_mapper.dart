@@ -16,7 +16,7 @@ class MovieMapper {
       popularity: movieDB.popularity,
       posterPath: (movieDB.posterPath != '')
           ? 'https://image.tmdb.org/t/p/w500${movieDB.posterPath}'
-          : 'no poster',
+          : 'https://lascrucesfilmfest.com/wp-content/uploads/2018/01/no-poster-available-737x1024.jpg',
       releaseDate: movieDB.releaseDate,
       title: movieDB.title,
       video: movieDB.video,
@@ -36,7 +36,7 @@ class MovieMapper {
       popularity: movieDB.popularity,
       posterPath: (movieDB.posterPath != '')
           ? 'https://image.tmdb.org/t/p/w500${movieDB.posterPath}'
-          : 'no poster',
+          : 'https://lascrucesfilmfest.com/wp-content/uploads/2018/01/no-poster-available-737x1024.jpg',
       releaseDate: movieDB.releaseDate,
       title: movieDB.title,
       video: movieDB.video,
