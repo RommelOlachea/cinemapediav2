@@ -5,7 +5,7 @@ class CustomBottomNavigatorBar extends StatelessWidget {
   const CustomBottomNavigatorBar({super.key});
 
   int getCurrentIndex(BuildContext context) {
-    // final String location = GoRouterState.of(context).location;
+    // final String location = GoRouter.of(context).loca
     final String location = '/favorites';
 
     switch (location) {
