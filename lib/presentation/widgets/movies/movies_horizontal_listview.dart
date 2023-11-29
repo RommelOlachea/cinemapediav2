@@ -8,9 +8,10 @@ class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subTitle;
-  final VoidCallback? loadNextPage; //esto me permite ejecutar una funcion del padre
+  final VoidCallback?
+      loadNextPage; //esto me permite ejecutar una funcion del padre
 
-  const MovieHorizontalListview(  
+  const MovieHorizontalListview(
       {super.key,
       required this.movies,
       this.title,
@@ -70,7 +71,8 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
                 const BouncingScrollPhysics(), //con esto se anima igual tanto en ios como en android
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return FadeInRight( //la animacion FadeInRight nos permite realizar un entrada de dercha a izquierda, se ve bien
+              return FadeInRight(
+                //la animacion FadeInRight nos permite realizar un entrada de dercha a izquierda, se ve bien
                 child: _Slide(
                   movie: widget.movies[index],
                 ),
@@ -114,11 +116,11 @@ class _Slide extends StatelessWidget {
                     );
                   }
 
+                  //si ya no esta cargando regresamos un gesture detector., para cuando se hace tap sobre la imagen., nos redireccione al screen de detalle
                   return GestureDetector(
-                    onTap: () => context.push('/movie/${movie.id}'), //navegamos con el path de navegacion, y pasamos el parametro
-                    child: FadeIn(
-                        child:
-                            child),
+                    onTap: () => context.push(
+                        '/home/0/movie/${movie.id}'), //navegamos con el path de navegacion, y pasamos el parametro
+                    child: FadeIn(child: child),
                   ); //FadeIn del paque te de animate do de fernando
                 },
               ),
