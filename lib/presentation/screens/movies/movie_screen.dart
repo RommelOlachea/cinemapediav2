@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -157,7 +156,8 @@ class _ActorsByMovie extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //actor photo
-                FadeInRight( //con esta animacion aparecen animadas hacia la derecha
+                FadeInRight(
+                  //con esta animacion aparecen animadas hacia la derecha
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.network(
@@ -194,19 +194,62 @@ class _ActorsByMovie extends ConsumerWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+//aqui vamos a utilizar el modificador family del provider., y ademas se utiliza el FutureProvider
+//que nos permitira esperar el resultado de otro provider o de alguna funciono o metodo asyncrono para regresar el resultado,
+//tambien se usara el modificador de family
+
+final isFavoriteProvider =
+    FutureProvider.family.autoDispose((ref, int movieId) {
+  final localStorageRepository = ref.watch(localStorageRepositoryProvider);
+
+  return localStorageRepository.isMovieFavorite(movieId);
+});
+
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    //utilizamos el provider isFavoriteProvider y le damos el argumento
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
     final size = MediaQuery.of(context)
         .size; //con esto obtenemos el tamano del dispositivo fisico
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
+      actions: [
+        IconButton(
+          onPressed: () async{
+            // ref.read(localStorageRepositoryProvider).toggleFavorite(movie);
+
+
+            //nota: hicimos el onPressed async porque necesitos que el invalidate se ejecute cuando el tooggleFavorites finalize,
+            //y no tener comportamientos inesperados.
+            await ref.read(favoriteMoviesProvider.notifier).toggleFavorite(movie);
+
+            //con el invalidate., lo que hacemos es regresar al estado inicial el provider., en este caso es un
+            //future lo que se espera tener, porque lo que lo inicia al estado inicial, y volvemos a invocar la peticion.,
+            //esto es para que se vuelva invocar nuevamente, vuelva a obtener si es una movie favorita., y vuelva
+            //a redibujar el widget del icono.
+            ref.invalidate(isFavoriteProvider(movie.id));
+          },
+          icon: isFavoriteFuture.when(
+              data: (isFavorite) => isFavorite
+                  ? const Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.red,
+                    )
+                  : const Icon(Icons.favorite_border),
+              error: (_, __) => throw UnimplementedError(),
+              loading: () => const CircularProgressIndicator(strokeWidth: 2)),
+          //const Icon(Icons.favorite_border)
+          // icon: const Icon(Icons.favorite_rounded, color: Colors.red,)
+        ),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         //con esta propiedad manejaremos el espacio flexible del SliveAppBar
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -224,42 +267,61 @@ class _CustomSliverAppBar extends StatelessWidget {
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress != null) return SizedBox();
-                  return FadeIn(child: child); //con fadein no aparece de golpe la imagen
+                  return FadeIn(
+                      child: child); //con fadein no aparece de golpe la imagen
                 },
               ),
             ),
-            const SizedBox.expand(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [
-                    0.7,
-                    1.0
-                  ], //los stops me permitn definir en que parte del contenedor iniciara el gradiente y terminara
-                          colors: [
-                    Colors.transparent,
-                    Colors.black87
-                  ]))),
-            ),
-            const SizedBox.expand(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          stops: [
-                    0.0,
-                    0.3
-                  ], //los stops me permitn definir en que parte del contenedor iniciara el gradiente y terminara
-                          colors: [
-                    Colors.black87,
-                    Colors.transparent
-                  ]))),
-            ),
+
+            //gradiente para favoritos
+            const _CustomGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [0.0, 0.2],
+                colors: [Colors.black54, Colors.transparent]),
+
+            //gradiente para el bottom de la imagen
+            const _CustomGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.8, 1.0],
+                colors: [Colors.transparent, Colors.black54]),
+
+            //gradiente para el regreso al home
+            const _CustomGradient(
+                begin: Alignment.topLeft,
+                stops: [0.0, 0.3],
+                colors: [Colors.black87, Colors.transparent]),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CustomGradient extends StatelessWidget {
+  final AlignmentGeometry begin;
+  final AlignmentGeometry end;
+  final List<double> stops;
+  final List<Color> colors;
+
+  const _CustomGradient(
+      {this.begin = Alignment.centerLeft,
+      this.end = Alignment.centerRight,
+      required this.stops,
+      required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: DecoratedBox(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: begin,
+                  end: end,
+                  stops:
+                      stops, //los stops me permitn definir en que parte del contenedor iniciara el gradiente y terminara
+                  colors: colors))),
     );
   }
 }

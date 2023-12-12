@@ -9,7 +9,7 @@ final appRouter = GoRouter(
         '/home/0', //la ruta por default es home, con el paremetro de pageindex en 0
     routes: [
       GoRoute(
-          path: '/home/:page', //el parametro recibido se encuentra en page
+          path: '/home/:page', //el parametro recibido se encuentra en page, y se utilizara porque se utiliza un widget IndexedStack en el home
           name: HomeScreen.name,
           builder: (context, state) {
             final pageIndex = state.pathParameters['page'] ??
